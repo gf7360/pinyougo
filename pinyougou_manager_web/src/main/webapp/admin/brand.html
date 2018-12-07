@@ -19,12 +19,32 @@
 	<script>
         //定义模块
         var app= angular.module("pinyougou",["pagination"]);
-
+     //定义服务  抽取请求
+		app.service("brandService",function ($http) {
+            this.findAll=function () {
+               return $http.get("../brand/findAll.do");
+            };
+            this.findPage=function (pageNum,pageSize) {
+               return $http.get("../brand/findPage.do?pageNum="+pageNum+"&pageSize="+pageSize)
+            };
+            this.add=function (entity) {
+                return $http.post("../brand/add.do" ,entity)
+            };
+            this.update=function (entity) {
+                return $http.post("../brand/update.do" ,entity)
+            };
+            this.findOne=function (id) {
+                return $http.get("../brand/findOne.do?id="+id)
+            };
+            this.dele=function (ids) {
+				return $http.get("../brand/delete.do?ids="+ids)
+            }
+        });
         //根据模块定义控制器
-        app.controller("brandController", function ($scope, $http) {
+        app.controller("brandController", function ($scope,brandService) {
             //定义查询所有品牌列表的方法
             $scope.findAll=function() {
-                $http.get("../brand/findAll.do").success(function (response) {
+                brandService.findAll().success(function (response) {
                     $scope.list = response;
                 });
             };
@@ -40,7 +60,7 @@
             };
             //分页请求
             $scope.findPage=function (pageNum,pageSize) {
-                $http.get("../brand/findPage.do?pageNum="+pageNum+"&pageSize="+pageSize).success(function(response){
+                brandService.findPage(pageNum,pageSize).success(function(response){
                    $scope.paginationConf.totalItems=response.total;  //总页数
                     $scope.list=response.rows;
                 });
@@ -50,15 +70,15 @@
             };
             //添加品牌数据的方法
             $scope.save=function () {
-              var methodName="";
+              var method=null;
                 if($scope.entity.id!=null){
                     //修改方法
-                    methodName="update.do";
+                    method=brandService.update($scope.entity);
 				}else{
                     //增加品牌
-                    methodName="add.do";
+                    method=brandService.add($scope.entity);
 				}
-                $http.post("../brand/"+methodName ,$scope.entity).success(function (response) {
+                method.success(function (response) {
                     if(response.success){
                         $scope.reloadList();
                     }else{
@@ -69,7 +89,7 @@
             };
 			//修改品牌数据
 			$scope.findOne=function (id) {
-                $http.get("../brand/findOne.do?id="+id).success(function (response) {
+                brandService.findOne(id).success(function (response) {
                     $scope.entity = response;
                 });
             };
@@ -89,7 +109,7 @@
             //删除品牌；
             $scope.dele=function () {
                 if(confirm("您确定要删除吗?")){
-                    $http.get("../brand/delete.do?ids="+$scope.seleteIds).success(function (response) {
+                    brandService.dele($scope.seleteIds).success(function (response) {
                         if(response.success){
                             $scope.reloadList();
                         }else{
