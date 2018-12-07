@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试Angularjs的指令</title>
+    <!--引入Angularjs的资源-->
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+
+    <script>
+        //定义模块
+       var app= angular.module("mymodule",[]);
+        //根据模块定义控制器
+        app.controller("mucrtl",function($scope,$http){
+            $http.get("../brand/findAll.do").success(function(response){
+                $scope.list=response;
+            });
+        });
+    </script>
+</head>
+<body>
+    <div ng-app="mymodule" ng-controller="mucrtl" ng-model="response"  >
+        <table>
+            <tr>
+                <td>brandId</td>
+                <td>brandName</td>
+                <td>brand首字母</td>
+            </tr>
+            <tr ng-repeat="brand in list" >
+                <td>{{brand.id}}</td>
+                <td>{{brand.name}}</td>
+                <td>{{brand.firstChar}}</td>
+            </tr>
+
+        </table>
+    </div>
+</body>
+</html>

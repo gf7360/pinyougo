@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angular入门demo之表达式</title>
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+    <script>
+        //定义模块
+        var app= angular.module("mymodule",[]);
+        //根据模块定义控制器
+        app.controller("mucrtl",function($scope){
+            $scope.name="15";
+        });
+    </script>
+</head >
+<body >
+<div ng-app="mymodule" ng-controller="mucrtl" >
+    请输入：<input type="text" ng-model="name" ><br>
+    输出的内容：{{name}}
+</div>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
