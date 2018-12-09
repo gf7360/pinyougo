@@ -15,114 +15,12 @@
     <!--引入分页插件-->
 	<script type="text/javascript" src="../plugins/angularjs/pagination.css"></script>
 	<script type="text/javascript" src="../plugins/angularjs/pagination.js"></script>
+<!--抽取js代码到js文件并引入，使页面只保留html代码，更清晰；-->
+	<script type="text/javascript" src="../js/base_pagination.js"></script>
+	<script type="text/javascript" src="../js/service/brandService.js"></script>
+	<script type="text/javascript" src="../js/controller/baseController.js"></script>
+	<script type="text/javascript" src="../js/controller/brandController.js"></script>
 
-	<script>
-        //定义模块
-        var app= angular.module("pinyougou",["pagination"]);
-     //定义服务  抽取请求
-		app.service("brandService",function ($http) {
-            this.findAll=function () {
-               return $http.get("../brand/findAll.do");
-            };
-            this.findPage=function (pageNum,pageSize) {
-               return $http.get("../brand/findPage.do?pageNum="+pageNum+"&pageSize="+pageSize)
-            };
-            this.add=function (entity) {
-                return $http.post("../brand/add.do" ,entity)
-            };
-            this.update=function (entity) {
-                return $http.post("../brand/update.do" ,entity)
-            };
-            this.findOne=function (id) {
-                return $http.get("../brand/findOne.do?id="+id)
-            };
-            this.dele=function (ids) {
-				return $http.get("../brand/delete.do?ids="+ids)
-            }
-        });
-        //根据模块定义控制器
-        app.controller("brandController", function ($scope,brandService) {
-            //定义查询所有品牌列表的方法
-            $scope.findAll=function() {
-                brandService.findAll().success(function (response) {
-                    $scope.list = response;
-                });
-            };
-            //分页配置
-            $scope.paginationConf = {
-                currentPage:1,  				//当前页
-                totalItems:10,					//总记录数
-                itemsPerPage:10,				//每页记录数
-                perPageOptions:[10,20,30,40,50], //分页选项，下拉选择一页多少条记录
-                onChange:function(){			//页面变更后触发的方法
-                    $scope.reloadList();		//启动就会调用分页组件
-                }
-            };
-            //分页请求
-            $scope.findPage=function (pageNum,pageSize) {
-                brandService.findPage(pageNum,pageSize).success(function(response){
-                   $scope.paginationConf.totalItems=response.total;  //总页数
-                    $scope.list=response.rows;
-                });
-            }; //调用的分页方法
-            $scope.reloadList=function () {
-                $scope.findPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-            };
-            //添加品牌数据的方法
-            $scope.save=function () {
-              var method=null;
-                if($scope.entity.id!=null){
-                    //修改方法
-                    method=brandService.update($scope.entity);
-				}else{
-                    //增加品牌
-                    method=brandService.add($scope.entity);
-				}
-                method.success(function (response) {
-                    if(response.success){
-                        $scope.reloadList();
-                    }else{
-                        alert(response.message);
-                    }
-                });
-
-            };
-			//修改品牌数据
-			$scope.findOne=function (id) {
-                brandService.findOne(id).success(function (response) {
-                    $scope.entity = response;
-                });
-            };
-			//定义一个数组，将选中id存入数组中
-             $scope.seleteIds=[];
-			//更新复选框的状态；
-            $scope.updateSelection=function ($event,id) {
-                if($event.target.checked){
-                    //选中状态
-                    $scope.seleteIds.push(id);
-                }else{
-                    var index =$scope.seleteIds.indexOf(id); //获取索引；
-                    $scope.seleteIds.splice(index,1);//参数一：移除位置的 元素索引值
-                                                     //参数二：从该位置移除几个元素；
-                }
-            };
-            //删除品牌；
-            $scope.dele=function () {
-                if(confirm("您确定要删除吗?")){
-                    brandService.dele($scope.seleteIds).success(function (response) {
-                        if(response.success){
-                            $scope.reloadList();
-                        }else{
-                            alert(response.message);
-                        }
-                        $scope.entity = response;
-                    });
-                }
-            }
-        });
-
-	</script>
-    
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="brandController">
   <!-- .box-body -->
