@@ -31,7 +31,7 @@ app.controller("specificationController", function ($scope,$controller,specifica
     //添加规格数据的方法
     $scope.save=function () {
         var method=null;
-        if($scope.entity.id!=null){
+        if($scope.entity.specification.id!=null){
             //修改方法
             method=specificationService.update($scope.entity);
         }else{
@@ -66,5 +66,16 @@ app.controller("specificationController", function ($scope,$controller,specifica
                 $scope.entity = response;
             });
         }
-    }
+    };
+    //定义初始化entity对象；
+    $scope.entity={specificationOptions:[]};
+    //新增规格选项
+    $scope.addRow=function () {
+        $scope.entity.specificationOptions.push({});
+    };
+    //删除规格选项
+    $scope.deleRow=function (index) {
+        $scope.entity.specificationOptions.splice(index,1);
+    };
+
 });

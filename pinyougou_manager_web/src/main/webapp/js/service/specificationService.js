@@ -17,8 +17,10 @@ app.service("specificationService",function ($http) {
     };
     this.dele=function (ids) {
         return $http.get("../specification/delete.do?ids="+ids)
-    };  this.search=function (searchEntity, pageNum, pageSize) {
+    };
+    this.search=function (searchEntity, pageNum, pageSize) {
         return $http.post("../specification/search.do?pageNum="+pageNum+"&pageSize="+pageSize,searchEntity)
     };
+
 
 });
