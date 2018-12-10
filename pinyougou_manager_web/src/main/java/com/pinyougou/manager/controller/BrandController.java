@@ -5,7 +5,6 @@ import com.pinyougou.pojo.TbBrand;
 import com.pinyougou.sellergoods.service.BrandService;
 import entity.PageResult;
 import entity.Result;
-import org.junit.Test;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +27,22 @@ public class BrandController {
         return brandService.findAll();
 
     }
-@RequestMapping("/findPage")
-    public PageResult findPage(Integer pageNum,Integer pageSize){
+
+    /**
+     * 分页查询
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/findPage")
+    public PageResult findPage(Integer pageNum, Integer pageSize){
+
         return brandService.findPage(pageNum,pageSize);
+    }
+    @RequestMapping("/search")
+    public PageResult search(@RequestBody TbBrand brand, Integer pageNum, Integer pageSize){
+        return brandService.search(brand,pageNum,pageSize);
+
     }
 
     /**

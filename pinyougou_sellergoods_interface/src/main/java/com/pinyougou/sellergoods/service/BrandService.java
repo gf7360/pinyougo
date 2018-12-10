@@ -18,6 +18,7 @@ public interface BrandService {
 
     void delete(Long[] ids);
 
+    PageResult search(TbBrand brand, Integer pageNum, Integer pageSize);
 }
 
 

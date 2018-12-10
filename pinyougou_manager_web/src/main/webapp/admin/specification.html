@@ -13,7 +13,17 @@
     <link rel="stylesheet" href="../css/style.css">
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
-    
+	<!--引入Angularjs-->
+	<script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+	<!--引入分页插件-->
+	<script type="text/javascript" src="../plugins/angularjs/pagination.css"></script>
+	<script type="text/javascript" src="../plugins/angularjs/pagination.js"></script>
+	<!--抽取js代码到js文件并引入，使页面只保留html代码，更清晰；-->
+	<script type="text/javascript" src="../js/base_pagination.js"></script>
+	<script type="text/javascript" src="../js/service/brandService.js"></script>
+	<script type="text/javascript" src="../js/controller/baseController.js"></script>
+	<script type="text/javascript" src="../js/controller/brandController.js"></script>
+
 </head>
 
 <body class="hold-transition skin-red sidebar-mini" >
@@ -74,7 +84,9 @@
 			                          </tr>
 			                      </tbody>
 			                  </table>
-			                  <!--数据列表/-->    
+			                  <!--数据列表/-->
+							<!--分页工具条展示-->
+							<tm-pagination conf="paginationConf"></tm-pagination>
                         </div>
                         <!-- 数据表格 /--> 
                      </div>
@@ -115,30 +127,6 @@
                     </thead>
                     <tbody>
                       <tr>
-                           
-				            <td>
-				            	<input  class="form-control" placeholder="规格选项"> 
-				            </td>
-				            <td>
-				            	<input  class="form-control" placeholder="排序"> 
-				            </td>
-							<td>
-								<button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
-							</td>
-                      </tr>
-					  <tr>
-                         
-				            <td>
-				            	<input  class="form-control" placeholder="规格选项"> 
-				            </td>
-				            <td>
-				            	<input  class="form-control" placeholder="排序"> 
-				            </td>
-							<td>
-								<button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
-							</td>
-                      </tr>
-					  <tr>
                            
 				            <td>
 				            	<input  class="form-control" placeholder="规格选项"> 

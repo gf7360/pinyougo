@@ -11,7 +11,16 @@
             $scope.list = response;
         });
     };
+     //定义封装查询条件的对象；
+     $scope.searchEntity={};
 
+     //规格根据条件分页查询；
+     $scope.search=function (pageNum,pageSize) {
+         brandService.search($scope.searchEntity,pageNum,pageSize).success(function(response){
+             $scope.paginationConf.totalItems=response.total;  //总页数
+             $scope.list=response.rows;
+         });
+     };
     //分页请求
     $scope.findPage=function (pageNum,pageSize) {
         brandService.findPage(pageNum,pageSize).success(function(response){

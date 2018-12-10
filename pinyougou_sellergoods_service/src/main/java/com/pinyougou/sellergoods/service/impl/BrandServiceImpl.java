@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbBrandMapper;
 import com.pinyougou.pojo.TbBrand;
+import com.pinyougou.pojo.TbBrandExample;
 import com.pinyougou.sellergoods.service.BrandService;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class BrandServiceImpl implements BrandService {
      */
     @Override
     public List<TbBrand> findAll() {
-        return tbBrandMapper.findAll();
+        return tbBrandMapper.selectByExample(null);
     }
 
     /**
@@ -36,9 +37,31 @@ public class BrandServiceImpl implements BrandService {
     public PageResult findPage(Integer pageNum, Integer pageSize) {
         //设置分页查询条件
         PageHelper.startPage(pageNum,pageSize);
-        Page<TbBrand> page = (Page<TbBrand>)tbBrandMapper.findAll();
+        Page<TbBrand> page = (Page<TbBrand>)tbBrandMapper.selectByExample(null);
 
         return new PageResult(page.getTotal(),page.getResult());
+    }
+
+    @Override
+    public PageResult search(TbBrand brand, Integer pageNum, Integer pageSize) {
+        //定义分页查询条件；
+        PageHelper.startPage(pageNum,pageSize);
+        //设置分页条件
+        TbBrandExample brandExample = new TbBrandExample();
+        TbBrandExample.Criteria criteria = brandExample.createCriteria();
+        if(brand !=null){
+            String name = brand.getName();
+            String firstChar = brand.getFirstChar();
+            if(name!=null && !"".equals(name)){
+                criteria.andNameLike("%"+name+"%");
+            }
+            if(firstChar!=null && !"".equals(firstChar)){
+                criteria.andFirstCharEqualTo(firstChar);
+            }
+        }
+
+        Page<TbBrand> brands =(Page<TbBrand>) tbBrandMapper.selectByExample(brandExample);
+        return new PageResult(brands.getTotal(),brands.getResult());
     }
 
     /**
@@ -48,7 +71,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public void add(TbBrand tbBrand) {
 
-        tbBrandMapper.add(tbBrand);
+        tbBrandMapper.insert(tbBrand);
     }
 
     @Override

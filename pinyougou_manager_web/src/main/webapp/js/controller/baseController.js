@@ -11,7 +11,7 @@
      };
      //调用的分页方法
      $scope.reloadList=function () {
-         $scope.findPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+         $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
      };
      //定义一个数组，将选中id存入数组中
      $scope.seleteIds=[];
