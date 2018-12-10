@@ -20,13 +20,13 @@
 	<script type="text/javascript" src="../plugins/angularjs/pagination.js"></script>
 	<!--抽取js代码到js文件并引入，使页面只保留html代码，更清晰；-->
 	<script type="text/javascript" src="../js/base_pagination.js"></script>
-	<script type="text/javascript" src="../js/service/brandService.js"></script>
+	<script type="text/javascript" src="../js/service/specificationService.js"></script>
 	<script type="text/javascript" src="../js/controller/baseController.js"></script>
-	<script type="text/javascript" src="../js/controller/brandController.js"></script>
+	<script type="text/javascript" src="../js/controller/specificationController.js"></script>
 
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" >
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="specificationController">
   <!-- .box-body -->                
                     <div class="box-header with-border">
                         <h3 class="box-title">规格管理</h3>
@@ -48,8 +48,8 @@
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-							                    规格名称：<input  >									
-									<button class="btn btn-default" >查询</button>                                    
+							                    规格名称：<input ng-model="searchEntity.specName" >
+									<button ng-click="reloadList()" class="btn btn-default" >查询</button>
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -66,18 +66,10 @@
 			                          </tr>
 			                      </thead>
 			                      <tbody>
-			                          <tr >
+			                          <tr ng-repeat="pojo in list" >
 			                              <td><input  type="checkbox" ></td>			                              
-				                          <td>1</td>
-									      <td>网络制式</td>
-		                                  <td class="text-center">                                           
-		                                 	  <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改</button>                                           
-		                                  </td>
-			                          </tr>
-									  <tr >
-			                              <td><input  type="checkbox" ></td>			                              
-				                          <td>2</td>
-									      <td>服装尺码</td>
+				                          <td>{{pojo.id}}</td>
+									      <td>{{pojo.specName}}</td>
 		                                  <td class="text-center">                                           
 		                                 	  <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal">修改</button>                                           
 		                                  </td>
