@@ -13,31 +13,31 @@
      $scope.reloadList=function () {
          $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
      };
-     //定义一个数组，将选中id存入数组中
-     $scope.seleteIds=[];
+  //定义一个数组，将选中id存入数组中
+     $scope.selectIds=[];
      //更新复选框的状态；
      $scope.updateSelection=function ($event,id) {
          if($event.target.checked){
              //选中状态
-             $scope.seleteIds.push(id);
+             $scope.selectIds.push(id);
          }else{
-             var index =$scope.seleteIds.indexOf(id); //获取索引；
-             $scope.seleteIds.splice(index,1);//参数一：移除位置的 元素索引值
+             var index =$scope.selectIds.indexOf(id); //获取索引；
+             $scope.selectIds.splice(index,1);//参数一：移除位置的 元素索引值
                                               //参数二：从该位置移除几个元素；
          }
      };
 
 
      //定义一个数组，将选中id存入数组中
-     $scope.seleteIds=[];
+     $scope.selectIds=[];
      //更新复选框的状态；
      $scope.updateSelection=function ($event,id) {
          if($event.target.checked){
              //选中状态
-             $scope.seleteIds.push(id);
+             $scope.selectIds.push(id);
          }else{
-             var index =$scope.seleteIds.indexOf(id); //获取索引；
-             $scope.seleteIds.splice(index,1);//参数一：移除位置的 元素索引值
+             var index =$scope.selectIds.indexOf(id); //获取索引；
+             $scope.selectIds.splice(index,1);//参数一：移除位置的 元素索引值
                                               //参数二：从该位置移除几个元素；
          }
      };

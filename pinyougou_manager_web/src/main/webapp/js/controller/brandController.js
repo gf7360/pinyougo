@@ -57,7 +57,7 @@
     //删除品牌；
     $scope.dele=function () {
         if(confirm("您确定要删除吗?")){
-            brandService.dele($scope.seleteIds).success(function (response) {
+            brandService.dele($scope.selectIds).success(function (response) {
                 if(response.success){
                     $scope.reloadList();
                 }else{

@@ -57,7 +57,7 @@ app.controller("specificationController", function ($scope,$controller,specifica
     //删除规格；
     $scope.dele=function () {
         if(confirm("您确定要删除吗?")){
-            specificationService.dele($scope.seleteIds).success(function (response) {
+            specificationService.dele($scope.selectIds).success(function (response) {
                 if(response.success){
                     $scope.reloadList();
                 }else{

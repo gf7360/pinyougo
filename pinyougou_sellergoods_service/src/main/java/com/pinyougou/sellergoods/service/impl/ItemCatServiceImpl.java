@@ -74,12 +74,35 @@ public class ItemCatServiceImpl implements ItemCatService {
 	@Override
 	public void delete(Long[] ids) {
 		for(Long id:ids){
+			//判断当前分类是否有子分类，如有不允许删除
+			TbItemCatExample example=new TbItemCatExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andParentIdEqualTo(id);
+			List<TbItemCat> tbItemCats = itemCatMapper.selectByExample(example);
+
+
+			if(tbItemCats!=null && tbItemCats.size()>0){
+				throw new  RuntimeException("不允许直接删除包含子分类的数据");
+			}
 			itemCatMapper.deleteByPrimaryKey(id);
 		}		
 	}
-	
-	
-		@Override
+   /* @Override
+    public void delete(Long[] ids) {
+        *//*根据id查询子分类如果查询结果不为空不允许删除*//*
+        for (Long id : ids) {
+            List<TbItemCat> tbItemCats = itemCatMapper.selectByParentId(id);
+            if (tbItemCats != null && tbItemCats.size() > 0) {
+                throw new RuntimeException("不允许直接删除包含子分类的数据");
+            } else {
+                itemCatMapper.deleteByPrimaryKey(id);
+            }
+        }
+    }*/
+
+
+
+    @Override
 	public PageResult findPage(TbItemCat itemCat, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		
