@@ -21,6 +21,10 @@ app.service("specificationService",function ($http) {
     this.search=function (searchEntity, pageNum, pageSize) {
         return $http.post("../specification/search.do?pageNum="+pageNum+"&pageSize="+pageSize,searchEntity)
     };
+    //模板关联的规格数据查询；下拉选；
+    this.selectSpecList=function () {
+        return $http.get("../specification/selectSpecList.do")
+    };
 
 
 });

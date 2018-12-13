@@ -41,4 +41,30 @@
                                               //参数二：从该位置移除几个元素；
          }
      };
+     //解析json数据，根据属性名获取属性值 做字符串拼接操作；
+    //jsonString需要解析的json字符串  key json 对象的属性名；
+     $scope.jsonStringParse=function (jsonString, key) {
+         var value="";
+         var jsonArray=JSON.parse(jsonString);
+         for(var i=0;i<jsonArray.length;i++){
+             //json对象根据属性名获取属性值，有两种方式；
+                //如果属性名是确定值，直接  对象.属性名；
+                //如果属性名是不确定的值，是变量，需要  对象[属性名]
+             if(i>0){
+               value+=","+jsonArray[i][key];
+             }else{
+             value+=jsonArray[i][key];
+         }
+         }
+         return value ;
+     }
+
+
+
+
+
+
+
+
+
  });

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+
 @Service
 @Transactional
 public class BrandServiceImpl implements BrandService {
@@ -94,6 +96,15 @@ public class BrandServiceImpl implements BrandService {
             tbBrandMapper.deleteByPrimaryKey(id);
         }
 
+    }
+
+    /**
+     * 查询模板关联的品牌数据，展示下拉选
+     * @return
+     */
+    @Override
+    public List<Map> selectBrandList() {
+        return tbBrandMapper.selectBrandList();
     }
 }
 

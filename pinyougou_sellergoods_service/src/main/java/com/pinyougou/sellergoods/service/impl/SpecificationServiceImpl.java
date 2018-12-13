@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -121,6 +122,17 @@ public class SpecificationServiceImpl implements SpecificationService {
             specificationOptionMapper.deleteByExample(example);
         }
     }
+
+    /**
+     * 获取模板关联的规格数据
+     * @return
+     */
+    @Override
+    public List<Map> selectSpecList() {
+        return specificationMapper.selectSpecList();
+    }
+
+
 }
 
 

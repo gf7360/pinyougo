@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/specification")
 public class SpecificationController {
@@ -92,7 +95,14 @@ public class SpecificationController {
 
     }
 
+    /**
+     * 查询模板关联的品牌数据
+     */
+    @RequestMapping("/selectSpecList")
+    public List<Map> selectSpecList(){
 
+        return specificationService.selectSpecList();
+    }
 
 
 

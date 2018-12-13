@@ -4,6 +4,9 @@ import com.pinyougou.pojo.TbSpecification;
 import entity.PageResult;
 import group.Specification;
 
+import java.util.List;
+import java.util.Map;
+
 public interface SpecificationService {
 
     PageResult search(TbSpecification specification, Integer pageNum, Integer pageSize);
@@ -16,4 +19,5 @@ public interface SpecificationService {
     void delete(Long[] ids);
 
 
+    List<Map> selectSpecList();
 }

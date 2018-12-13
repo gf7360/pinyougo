@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RequestMapping("/brand")
@@ -81,10 +82,10 @@ public class BrandController {
 
         try {
             brandService.update(tbBrand);
-            return new Result(true,"修改成功");
+            return new Result(true,"修改 成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false,"修改失败");
+            return new Result(false,"修改 失败");
         }
 
     }
@@ -102,11 +103,19 @@ public class BrandController {
             return new Result(true,"删除成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false,"删除失败");
+            return new Result(false,"删除 失败");
         }
 
     }
 
+    /**
+     * 查询模板关联的品牌数据
+     */
+    @RequestMapping("/selectBrandList")
+    public List<Map> selectBrandList(){
+
+        return brandService.selectBrandList();
+    }
 
 
 }
