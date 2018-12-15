@@ -103,8 +103,8 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 		$scope.grade=grade;
     };
 	//面包屑导航栏展示效果实现； entity_p 为父类对象；
-	$scope.selectItemCatList=function (entity_p) {
-		//如果是一级分类
+	$scope.selectItemCatList=function (entity_p)  {
+		//如果是一级分类  pojo ==entity_p
 		if($scope.grade==1){
 			$scope.entity_1=null;
 			$scope.entity_2=null;

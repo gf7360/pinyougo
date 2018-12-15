@@ -56,7 +56,7 @@ app.controller('sellerController' ,function($scope,$controller   ,sellerService)
             function(response){
                 if(response.success){
                     //跳转登录页面
-                    location.href="shopilogin.html";
+                    location.href="shoplogin.html";
                 }else{
                     alert(response.message);
                 }
