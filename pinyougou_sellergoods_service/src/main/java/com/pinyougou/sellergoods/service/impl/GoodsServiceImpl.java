@@ -1,16 +1,21 @@
 package com.pinyougou.sellergoods.service.impl;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.pinyougou.mapper.TbGoodsDescMapper;
 import com.pinyougou.mapper.TbGoodsMapper;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbGoodsDesc;
 import com.pinyougou.pojo.TbGoodsExample;
 import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.sellergoods.service.GoodsService;
-
 import entity.PageResult;
+import group.Goods;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 服务实现层
@@ -18,6 +23,7 @@ import entity.PageResult;
  *
  */
 @Service
+@Transactional
 public class GoodsServiceImpl implements GoodsService {
 
 	@Autowired
@@ -40,13 +46,25 @@ public class GoodsServiceImpl implements GoodsService {
 		Page<TbGoods> page=   (Page<TbGoods>) goodsMapper.selectByExample(null);
 		return new PageResult(page.getTotal(), page.getResult());
 	}
-
+@Autowired
+private TbGoodsDescMapper tbGoodsDescMapper;
 	/**
 	 * 增加
 	 */
 	@Override
-	public void add(TbGoods goods) {
-		goodsMapper.insert(goods);		
+	public void add(Goods goods) {
+		//获取tb_goods数据
+		TbGoods tbGoods = goods.getGoods();
+		//设置状态 新录入的商品状态都是“0”表示未审核；
+		tbGoods.setAuditStatus("0");
+		goodsMapper.insert(tbGoods);
+		//获取tb_goods_desc的数据
+		TbGoodsDesc goodsDesc = goods.getGoodsDesc();
+		//获取tb_goods 保存时返回的id
+		goodsDesc.setGoodsId(tbGoods.getId());
+		tbGoodsDescMapper.insert(goodsDesc);
+
+
 	}
 
 	

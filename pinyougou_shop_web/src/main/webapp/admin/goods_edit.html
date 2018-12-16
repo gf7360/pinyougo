@@ -20,14 +20,21 @@
 	<link rel="stylesheet" href="../plugins/kindeditor/themes/default/default.css" />
 	<script charset="utf-8" src="../plugins/kindeditor/kindeditor-min.js"></script>
 	<script charset="utf-8" src="../plugins/kindeditor/lang/zh_CN.js"></script>
-    
-    
-      
-    
+	<!--引入Angularjs-->
+	<script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+
+	<!--抽取js代码到js文件并引入，使页面只保留html代码，更清晰；-->
+	<script type="text/javascript" src="../js/base.js"></script>
+	<script type="text/javascript" src="../js/service/goodsService.js"></script>
+    <script type="text/javascript" src="../js/service/itemCatService.js"></script>
+    <script type="text/javascript" src="../js/service/typeTemplateService.js"></script>
+	<script type="text/javascript" src="../js/controller/baseController.js"></script>
+	<script type="text/javascript" src="../js/controller/goodsController.js"></script>
+
     
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" >
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController" ng-init="selectItemCat1List()" >
 
             <!-- 正文区域 -->
             <section class="content">
@@ -66,17 +73,17 @@
 		                           	  	<table>
 		                           	  		<tr>
 		                           	  			<td>
-		                           	  				<select class="form-control" >														
+		                           	  				<select class="form-control" ng-model="entity.goods.category1Id" ng-options="item.id as item.name for item in itemCat1List">
 		                           	  				</select>
 		                              			</td>
 		                              			<td>
-		                           	  				<select class="form-control select-sm" ></select>
+		                           	  				<select class="form-control select-sm" ng-model="entity.goods.category2Id" ng-options="item.id as item.name for item in itemCat2List" ></select>
 		                              			</td>
 		                              			<td>
-		                           	  				<select class="form-control select-sm" ></select>
+		                           	  				<select class="form-control select-sm" ng-model="entity.goods.category3Id" ng-options="item.id as item.name for item in itemCat3List"></select>
 		                              			</td>
 		                              			<td>
-		                           	  				模板ID:19
+		                           	  				模板ID:{{entity.goods.typeTemplateId}}
 		                              			</td>
 		                           	  		</tr>
 		                           	  	</table>
@@ -86,24 +93,24 @@
 									
 		                           <div class="col-md-2 title">商品名称</div>
 		                           <div class="col-md-10 data">
-		                               <input type="text" class="form-control"    placeholder="商品名称" value="">
+		                               <input type="text" class="form-control" ng-model="entity.goods.goodsName" placeholder="商品名称" value="">
 		                           </div>
 		                           
 		                           <div class="col-md-2 title">品牌</div>
 		                           <div class="col-md-10 data">
-		                              <select class="form-control" ></select>
+		                              <select class="form-control" ng-model="entity.goods.brandId" ng-options="brand.id as brand.text for brand in brandList " ></select>
 		                           </div>
 		
 								   <div class="col-md-2 title">副标题</div>
 		                           <div class="col-md-10 data">
-		                               <input type="text" class="form-control"   placeholder="副标题" value="">
+		                               <input type="text" class="form-control" ng-model="entity.goods.caption"  placeholder="副标题" value="">
 		                           </div>
 		                           
 		                           <div class="col-md-2 title">价格</div>
 		                           <div class="col-md-10 data">
 		                           	   <div class="input-group">
 			                          	   <span class="input-group-addon">¥</span>
-			                               <input type="text" class="form-control"  placeholder="价格" value="">
+			                               <input type="text" class="form-control"ng-model="entity.goods.price"   placeholder="价格" value="">
 		                           	   </div>
 		                           </div>
 		                           
@@ -115,12 +122,12 @@
 		                           <div class="col-md-2 title rowHeight2x">包装列表</div>
 		                           <div class="col-md-10 data rowHeight2x">
 		                               
-		                           	<textarea rows="4"  class="form-control"   placeholder="包装列表"></textarea>
+		                           	<textarea rows="4" ng-model="entity.goodsDesc.packageList"  class="form-control"   placeholder="包装列表"></textarea>
 		                           </div>
 		                           
 		                           <div class="col-md-2 title rowHeight2x">售后服务</div>
 		                           <div class="col-md-10 data rowHeight2x">
-		                               <textarea rows="4"  class="form-control"    placeholder="售后服务"></textarea>
+		                               <textarea rows="4"  class="form-control" ng-model="entity.goodsDesc.saleService"   placeholder="售后服务"></textarea>
 		                           </div>                        
                                   
                                     
@@ -342,7 +349,7 @@
                  	
                    </div>
                   <div class="btn-toolbar list-toolbar">
-				      <button class="btn btn-primary" ><i class="fa fa-save"></i>保存</button>
+				      <button class="btn btn-primary" ng-click="save()" ><i class="fa fa-save"></i>保存</button>
 				      <button class="btn btn-default" >返回列表</button>
 				  </div>
 			
