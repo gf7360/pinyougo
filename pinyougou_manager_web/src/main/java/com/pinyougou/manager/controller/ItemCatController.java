@@ -91,7 +91,10 @@ public class ItemCatController {
 	public Result delete(Long [] ids){
 		try {
 			itemCatService.delete(ids);
-			return new Result(true, "删除成功"); 
+			return new Result(true, "删除成功");
+		}catch(RuntimeException r){
+			r.printStackTrace();
+			return new Result(false,r.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Result(false, "删除失败");

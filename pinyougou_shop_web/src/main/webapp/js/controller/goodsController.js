@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService,itemCatService,typeTemplateService){
+app.controller('goodsController' ,function($scope,$controller ,uploadService,goodsService,itemCatService,typeTemplateService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -119,5 +119,38 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService,it
 				$scope.brandList=JSON.parse(response.brandIds);
             })
     } );
+    //图片上传的方法
+	$scope.uploadFile=function () {
+		uploadService.uploadFile().success(function (response) {
+            if(response.success){
+                //图片上传成功，展示图片
+				$scope.imageEntity.url=response.message;
+            }else{
+                alert(response.message);
+            }
+        })
+    };
+	//初始化entity对象； 因为要对上传的图片进行增加和删除操作；
+    $scope.entity={goods:{},goodsDesc:{itemImages:[]},itemList:[]};
+    $scope.addImageEntity=function () {
+        //添加上传的商品图片的url和color添加到商品图片列表中；
+        $scope.entity.goodsDesc.itemImages.push($scope.imageEntity);
+    };
 
-});	
+    $scope.deleteImageEntity=function (index) {
+        //删除上传的商品图片从商品图片列表中；
+        $scope.entity.goodsDesc.itemImages.splice(index,1);
+    };
+});
+
+
+
+
+
+
+
+
+
+
+
+

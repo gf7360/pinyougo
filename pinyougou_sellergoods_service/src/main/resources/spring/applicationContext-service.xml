@@ -8,7 +8,7 @@
         http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<!--dubbo协议端口号配置 默认端口：20881 因为后期会有很多模块，都用默认的 有端口号冲突-->
+	<!--dubbo协议端口号配置 默认端口：20880 因为后期会有很多模块，都用默认的 有端口号冲突-->
     <dubbo:protocol name="dubbo" port="20881"></dubbo:protocol>
 	<!--提供服务的项目名称-->
 	<dubbo:application name="pinyougou-sellergoods-service"/>

@@ -68,6 +68,7 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
                             //alert("是否正确");
                         } else {
                             alert("删除错误");
+                            $scope.selectIds={};
                         }
                     }
                 );
