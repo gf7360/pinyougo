@@ -58,12 +58,21 @@
          }
          return value ;
      }
-
-
-
-
-
-
+    //商品录入时规格的勾选
+     //基于数组中的对象的属性值，获取对应的该对象并返回；
+     //[{"attributeName":"网络","attributeValue":["移动3G","移动4G"]},	{"attributeName":"机身内存","attributeValue":["16G"]}]
+     //key = "attributeName" value = 网络 ;
+    $scope.getObjectByKey=function (list, key, value) {
+        for (var i=0;i<list.length;i++) {  //集合中有多个规格名称，页面传来的规格名称和集合中存在的规格名称一一匹配，
+            // 匹配上，证明这个规格对象是存在的，若在勾选规格选项，直接往里加，否则创建；
+            //存在对象时
+            if(list[i][key]==value){
+                return list[i]; // 证明对象存在，返回该对象，直接往对象中加值
+                //{"attributeName":"value","attributeValue":["移动3G",把勾选的规格选项加入,"移动4G"]},
+            }
+        }
+        return null; //证明数组中没有这个规格，创建；
+    }
 
 
 

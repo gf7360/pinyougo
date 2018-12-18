@@ -117,7 +117,14 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
             function(response){
                //将返回得品牌json字符串转为json数组对象；
 				$scope.brandList=JSON.parse(response.brandIds);
-            })
+				//[{"text":"内存大小"},{"text":"颜色"}]
+				$scope.entity.goodsDesc.customAttributeItems=JSON.parse(response.customAttributeItems);
+    });
+        //查询关联的规格列表数据  监控模板id 跟据它的变化进行查询规格；
+        typeTemplateService.findSpecList(newValue).success(function (response) {
+        	//返回的数据是规格列表数据和规格选项数据；
+			$scope.specList=response;
+        })
     } );
     //图片上传的方法
 	$scope.uploadFile=function () {
@@ -131,16 +138,41 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
         })
     };
 	//初始化entity对象； 因为要对上传的图片进行增加和删除操作；
-    $scope.entity={goods:{},goodsDesc:{itemImages:[]},itemList:[]};
+    $scope.entity={goods:{},goodsDesc:{itemImages:[],specificationItems:[]},itemList:[]};
+    //添加上传的商品图片的url和color添加到商品图片列表中；
     $scope.addImageEntity=function () {
-        //添加上传的商品图片的url和color添加到商品图片列表中；
         $scope.entity.goodsDesc.itemImages.push($scope.imageEntity);
     };
-
+    //删除上传的商品图片从商品图片列表中；
     $scope.deleteImageEntity=function (index) {
-        //删除上传的商品图片从商品图片列表中；
         $scope.entity.goodsDesc.itemImages.splice(index,1);
     };
+    //组装商品录入勾选的规格列表属性；
+	$scope.updateSpecAttribute=function ($event, specName, specOption) {
+		var specObject = $scope.getObjectByKey($scope.entity.goodsDesc.specificationItems,"attributeName",specName);
+		if(specObject!=null){
+			//代表存在，[{"attributeName":"网络","attributeValue":["移动3G","移动4G"]}]
+			if($event.target.checked){
+				//代表勾选 加入到数组中；
+                specObject.attributeValue.push(specOption);
+			}else{
+				//代表取消勾选 从数组中移除；
+				var index = specObject.attributeValue.indexOf(specOption);
+                specObject.attributeValue.splice(index,1);
+              	  //如果取消该规格对应的所有规格选项，从规格列表中移除；
+					if(specObject.attributeValue.length<=0){
+					var index1 = $scope.entity.goodsDesc.specificationItems.indexOf(specObject);
+                        $scope.entity.goodsDesc.specificationItems.splice(index1,1);
+					}
+			}
+		}else{
+			//代表不存在；[ ] 创建
+            $scope.entity.goodsDesc.specificationItems.push({"attributeName":specName,"attributeValue":[specOption]})
+		}
+    }
+
+
+
 });
 
 
