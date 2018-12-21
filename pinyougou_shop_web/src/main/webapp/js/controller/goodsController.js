@@ -119,6 +119,7 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
 				$scope.brandList=JSON.parse(response.brandIds);
 				//[{"text":"内存大小"},{"text":"颜色"}]
 				$scope.entity.goodsDesc.customAttributeItems=JSON.parse(response.customAttributeItems);
+
     });
         //查询关联的规格列表数据  监控模板id 跟据它的变化进行查询规格；
         typeTemplateService.findSpecList(newValue).success(function (response) {
@@ -138,10 +139,18 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
         })
     };
 	//初始化entity对象； 因为要对上传的图片进行增加和删除操作；
-    $scope.entity={goods:{},goodsDesc:{itemImages:[],specificationItems:[]},itemList:[]};
+    $scope.entity={goods:{isEnableSpec:"1"},goodsDesc:{itemImages:[],specificationItems:[]},itemList:[]};
     //添加上传的商品图片的url和color添加到商品图片列表中；
     $scope.addImageEntity=function () {
         $scope.entity.goodsDesc.itemImages.push($scope.imageEntity);
+        //js清空上传文件操作
+        var file = document.getElementById("file");
+        // for IE, Opera, Safari, Chrome
+        if (file.outerHTML) {
+            file.outerHTML = file.outerHTML;
+        } else { // FF(包括3.5)
+            file.value = "";
+        }
     };
     //删除上传的商品图片从商品图片列表中；
     $scope.deleteImageEntity=function (index) {
@@ -169,7 +178,42 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
 			//代表不存在；[ ] 创建
             $scope.entity.goodsDesc.specificationItems.push({"attributeName":specName,"attributeValue":[specOption]})
 		}
-    }
+    };
+    //创建item列表
+	$scope.createItemList=function () {
+		//初始化item对象； entity 就是组装类 Goods；
+		$scope.entity.itemList=[{spec:{ },parse:0,num:999,status:"1",isDefault:"0"}];
+		//勾选规格结果集 specList= [{"attributeName":"网络制式","attributeValue":["移动3G"},,"移动4G"]
+		//                           {"attributeName":"机身内存","attributeValue":["16G"],"32G"]}
+		var specList = $scope.entity.goodsDesc.specificationItems;
+        if(specList.length==0){ 
+            $scope.entity.itemList=[]
+        }
+		for(var i=0;i<specList.length;i++){  //根据网络制式查询到2条记录
+			//动态为列表中对象的spec属性赋值的方法；
+			//spec对象={"机身内存":"16G","网络":"联通3G"}
+			//给这个方法传入的参数 item列表 为了给itemLIst列表组装数据 规格，规格选项   页面遍历的就是itemList列表；
+			$scope.entity.itemList=addColumn($scope.entity.itemList,specList[i].attributeName,specList[i].attributeValue);
+        }//itemList=[{spec:{机身内存:"16G },parse:0,num:999,status:"1",isDefault:"0"}];
+		}; //[{spec:{网络制式:"移动4G },parse:0,num:999,status:"1",isDefault:"0"}]
+		//组装itemList列表的方法 并使用深克隆技术
+        addColumn=function (itemList,specName,specOptions) {
+			var newItemList=[];  //将列表集合存入后返回
+			//动态组装itemList的spec对象={"机身内存":"16G","网络":"联通3G"}
+            for (var i=0;i<itemList.length;i++) {
+            	var item=itemList[i];
+				for(var j=0;j<specOptions.length;j++){
+					//基于深克隆实现构建item对象操作；
+                   var newItem=JSON.parse(JSON.stringify(item));
+                   //spec是一个对象{"机身内存":"16G","网络":"联通3G"} ；
+                    newItem.spec[specName]=specOptions[j];//16G
+                    newItemList.push(newItem);
+				}
+            }//itemList=[{spec:{机身内存:"16G },parse:0,num:999,status:"1",isDefault:"0"}];
+            return  newItemList;
+        }
+
+
 
 
 

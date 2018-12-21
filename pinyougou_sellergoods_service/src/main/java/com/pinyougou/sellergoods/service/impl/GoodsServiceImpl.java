@@ -1,13 +1,11 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.pinyougou.mapper.TbGoodsDescMapper;
-import com.pinyougou.mapper.TbGoodsMapper;
-import com.pinyougou.pojo.TbGoods;
-import com.pinyougou.pojo.TbGoodsDesc;
-import com.pinyougou.pojo.TbGoodsExample;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojo.TbGoodsExample.Criteria;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.PageResult;
@@ -15,7 +13,9 @@ import group.Goods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务实现层
@@ -48,6 +48,14 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 @Autowired
 private TbGoodsDescMapper tbGoodsDescMapper;
+	@Autowired
+	private TbItemCatMapper tbItemCatMapper;
+	@Autowired
+	private TbBrandMapper tbBrandMapper;
+	@Autowired
+	private TbSellerMapper tbSellerMapper;
+	@Autowired
+	private TbItemMapper tbItemMapper;
 	/**
 	 * 增加
 	 */
@@ -63,11 +71,84 @@ private TbGoodsDescMapper tbGoodsDescMapper;
 		//获取tb_goods 保存时返回的id
 		goodsDesc.setGoodsId(tbGoods.getId());
 		tbGoodsDescMapper.insert(goodsDesc);
+//判断是否采用规格
+		if("1".equals(tbGoods.getIsEnableSpec())){
+			//保存tb_item表数据
+			List<TbItem> itemList = goods.getItemList();
+			for (TbItem tbItem : itemList) {
+				//获取商品标题   先获取商品名称 SPU名称；
+				String title = tbGoods.getGoodsName();
+				//这是前台输入的规格选项集合 {"机身内存":"16G","网络":"联通3G"}
+				String spec = tbItem.getSpec();
+				Map<String,String> specMap = JSON.parseObject(spec, Map.class);
+				for (String key : specMap.keySet()) { //specMap.keySet()得到map集合中的所有的key；
+					title+=" "+specMap.get(key);//拼装商品名称和规格选项；得到商品标题
+				}
+				tbItem.setTitle(title);//将商品标题设置到TbItem对象；
+				//调用方法封装数据
+				setItemValue(tbGoods, goodsDesc, tbItem);
+				tbItemMapper.insert(tbItem);
+			}
+		}else{
+			//没有启用规格   生成一条默认的item数据；
+			TbItem tbItem = new TbItem();
+			tbItem.setTitle(tbGoods.getGoodsName());
+			setItemValue(tbGoods, goodsDesc, tbItem);
+			tbItem.setSpec("{}");
+			tbItem.setPrice(tbGoods.getPrice());
+			tbItem.setNum(9999);//库存
+			tbItem.setStatus("1");
+			tbItem.setIsDefault("1");
+			tbItemMapper.insert(tbItem);
+		}
+
+
+	//后台组装
+	//`title` varchar(100) NOT NULL COMMENT '商品标题',   // 商品名称（SPU名称）+ 商品规格选项名称 中间以空格隔开
+	//`image` varchar(2000) DEFAULT NULL COMMENT '商品图片',  // 从 tb_goods_desc item_images中获取第一张  搜索时展现的具体的商品的图片；
+
+	//`categoryId` bigint(10) NOT NULL COMMENT '所属类目，叶子类目',  //三级分类id
+	//`create_time` datetime NOT NULL COMMENT '创建时间',
+	//`update_time` datetime NOT NULL COMMENT '更新时间',
+	//`goods_id` bigint(20) DEFAULT NULL,
+	//`seller_id` varchar(30) DEFAULT NULL,
+	//以下字段作用： 为搜索做数据准备：
+	//`category` varchar(200) DEFAULT NULL, //三级分类名称
+	//`brand` varchar(100) DEFAULT NULL,//品牌名称
+	//`seller` varchar(200) DEFAULT NULL,//商家店铺名称
 
 
 	}
 
-	
+	/**
+	 * 抽取封装规格数据的方法；
+	 * @param tbGoods
+	 * @param goodsDesc
+	 * @param tbItem
+	 */
+	private void setItemValue(TbGoods tbGoods, TbGoodsDesc goodsDesc, TbItem tbItem) {
+		//image数据的组装；
+		String itemImages = goodsDesc.getItemImages();
+		List<Map> imageList = JSON.parseArray(itemImages,Map.class);
+		if(imageList!=null && imageList.size()>0){
+            String image = (String)imageList.get(0).get("url");
+            tbItem.setImage(image);
+        }
+		tbItem.setCategoryid(tbGoods.getCategory3Id());
+		tbItem.setCreateTime(new Date());
+		tbItem.setUpdateTime(new Date());
+		tbItem.setGoodsId(tbGoods.getId());
+		tbItem.setSellerId(tbGoods.getSellerId());
+		TbItemCat tbItemCat = tbItemCatMapper.selectByPrimaryKey(tbGoods.getCategory3Id());
+		tbItem.setCategory(tbItemCat.getName());
+		TbBrand tbBrand = tbBrandMapper.selectByPrimaryKey(tbGoods.getBrandId());
+		tbItem.setBrand(tbBrand.getName());
+		TbSeller tbSeller = tbSellerMapper.selectByPrimaryKey(tbGoods.getSellerId());
+		tbItem.setSeller(tbSeller.getSellerId());
+
+	}
+
+
 	/**
 	 * 修改
 	 */

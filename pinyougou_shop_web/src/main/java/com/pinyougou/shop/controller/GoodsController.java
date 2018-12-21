@@ -52,7 +52,7 @@ public class GoodsController {
 	@RequestMapping("/add")
 	public Result add(@RequestBody Goods goods){
 		try {
-			//基于安全框架获取商家的id
+			//基于安全框架获取商家的id  封装数据商家id；
 			String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
 			goods.getGoods().setSellerId(sellerId);
 			goodsService.add(goods);
