@@ -173,27 +173,31 @@ private TbGoodsDescMapper tbGoodsDescMapper;
 	@Override
 	public void delete(Long[] ids) {
 		for(Long id:ids){
-			goodsMapper.deleteByPrimaryKey(id);
-		}		
+			TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+			tbGoods.setIsDelete("1");
+			goodsMapper.updateByPrimaryKey(tbGoods);
+		}
 	}
 	
 	
 		@Override
 	public PageResult findPage(TbGoods goods, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
-		
+
 		TbGoodsExample example=new TbGoodsExample();
 		Criteria criteria = example.createCriteria();
-		
+			criteria.andIsDeleteIsNull();//非删除状态
+
 		if(goods!=null){			
-						if(goods.getSellerId()!=null && goods.getSellerId().length()>0){
-				criteria.andSellerIdLike("%"+goods.getSellerId()+"%");
+			if(goods.getSellerId()!=null && goods.getSellerId().length()>0){
+				criteria.andSellerIdEqualTo(goods.getSellerId());
 			}
 			if(goods.getGoodsName()!=null && goods.getGoodsName().length()>0){
 				criteria.andGoodsNameLike("%"+goods.getGoodsName()+"%");
 			}
 			if(goods.getAuditStatus()!=null && goods.getAuditStatus().length()>0){
 				criteria.andAuditStatusLike("%"+goods.getAuditStatus()+"%");
+				/*criteria.andAuditStatusEqualTo("0");*/
 			}
 			if(goods.getIsMarketable()!=null && goods.getIsMarketable().length()>0){
 				criteria.andIsMarketableLike("%"+goods.getIsMarketable()+"%");
@@ -216,5 +220,63 @@ private TbGoodsDescMapper tbGoodsDescMapper;
 		Page<TbGoods> page= (Page<TbGoods>)goodsMapper.selectByExample(example);		
 		return new PageResult(page.getTotal(), page.getResult());
 	}
-	
+
+	/**更新审核状态
+	 * 根据id更新状态
+	 * @param ids
+	 * @param status
+	 */
+	@Override
+	public void updateStatus(Long[] ids, String status) {
+		//根据id循环遍历获取tbgoods对象
+		for (Long id : ids) {
+			TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+			//设置tbgoods的审核状态码
+			tbGoods.setAuditStatus(status);
+			//更新状态；
+			goodsMapper.updateByPrimaryKey(tbGoods);
+		}
+	}
+
+	/**
+	 * 批量上下架
+	 * @param ids
+	 * @param isMarketable
+	 */
+	@Override
+	public void updateIsMarketable(Long[] ids, String isMarketable) {
+		for(Long id:ids){
+			TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+			if("1".equals(tbGoods.getAuditStatus())){
+				tbGoods.setIsMarketable(isMarketable);
+				goodsMapper.updateByPrimaryKey(tbGoods);
+			}else {
+				throw new RuntimeException("只有审核通过的商品才可以上下架");
+			}
+
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller   ,goodsService){	
+app.controller('goodsController' ,function($scope,$controller,itemCatService,goodsService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -64,7 +64,7 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 		);				
 	}
 	
-	$scope.searchEntity={};//定义搜索对象 
+	$scope.searchEntity={};//定义搜索对象
 	
 	//搜索
 	$scope.search=function(page,rows){			
@@ -74,6 +74,35 @@ app.controller('goodsController' ,function($scope,$controller   ,goodsService){
 				$scope.paginationConf.totalItems=response.total;//更新总记录数
 			}			
 		);
-	}
-    
+	};
+    //定义商品状态的数组
+    $scope.status=["未审核","已审核","审核未通过","关闭"];
+    //初始化对象
+    $scope.itemCatList=[];
+    $scope.selectItemCatList=function () {
+        itemCatService.findAll().success(function (response) {
+            //定义记录分类列表的数组  把id当做数组角标；name做值；
+            for(var i=0;i<response.length;i++){
+                //response[i]；分类对象一条记录
+                $scope.itemCatList[response[i].id]=response[i].name;
+            }
+        });
+    };
+    //批量审核
+    $scope.updateStatus=function(status){
+        //获取选中的复选框
+        goodsService.updateStatus( $scope.selectIds,status ).success(
+            function(response){
+                if(response.success){
+                    $scope.reloadList();//刷新列表
+                    $scope.selectIds=[];//清空记录id的数组
+                }else{
+                    alert(response.message);
+                }
+            }
+        );
+    };
+
+
+
 });	

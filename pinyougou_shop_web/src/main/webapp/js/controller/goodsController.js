@@ -211,7 +211,37 @@ app.controller('goodsController' ,function($scope,$controller ,uploadService,goo
 				}
             }//itemList=[{spec:{机身内存:"16G },parse:0,num:999,status:"1",isDefault:"0"}];
             return  newItemList;
-        }
+        };
+        //定义商品状态的数组
+		$scope.status=["未审核","已审核","审核未通过","关闭"];
+		//初始化对象
+		$scope.itemCatList=[];
+        $scope.selectItemCatList=function () {
+			itemCatService.findAll().success(function (response) {
+				//定义记录分类列表的数组  把id当做数组角标；name做值；
+				for(var i=0;i<response.length;i++){
+					//response[i]；分类对象一条记录
+					$scope.itemCatList[response[i].id]=response[i].name;
+				}
+			 });
+        };
+        //定义商品上下架数组
+	$scope.isMarketable=['下架','上架'];
+        //批量上下架
+    $scope.updateIsMarketable=function(isMarketable){
+        //获取选中的复选框
+        goodsService.updateIsMarketable( $scope.selectIds,isMarketable ).success(
+            function(response){
+                if(response.success){
+                    $scope.reloadList();//刷新列表
+                    $scope.selectIds=[];//清空记录id的数组
+                }else{
+                    alert(response.message);
+                    $scope.selectIds=[];//清空记录id的数组
+                }
+            }
+        );
+    };
 
 
 

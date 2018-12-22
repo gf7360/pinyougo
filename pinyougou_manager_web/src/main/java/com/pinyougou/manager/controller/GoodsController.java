@@ -42,21 +42,7 @@ public class GoodsController {
 		return goodsService.findPage(page, rows);
 	}
 	
-	/**
-	 * 增加
-	 * @param goods
-	 * @return
-	 */
-	@RequestMapping("/add")
-	public Result add(@RequestBody Goods goods){
-		try {
-			goodsService.add(goods);
-			return new Result(true, "增加成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Result(false, "增加失败");
-		}
-	}
+
 	
 	/**
 	 * 修改
@@ -93,7 +79,7 @@ public class GoodsController {
 	public Result delete(Long [] ids){
 		try {
 			goodsService.delete(ids);
-			return new Result(true, "删除成功"); 
+			return new Result(true, "删除成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Result(false, "删除失败");
@@ -110,6 +96,21 @@ public class GoodsController {
 	@RequestMapping("/search")
 	public PageResult search(@RequestBody TbGoods goods, int page, int rows  ){
 		return goodsService.findPage(goods, page, rows);		
+	}
+	/**
+	 * 批量更新状态
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping("/updateStatus")
+	public Result updateStatus(Long [] ids,String status){
+		try {
+			goodsService.updateStatus(ids,status);
+			return new Result(true, "审核成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "审核失败");
+		}
 	}
 	
 }
